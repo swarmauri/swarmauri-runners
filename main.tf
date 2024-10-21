@@ -59,16 +59,22 @@ locals {
   package_name = "docker.io"
 }
 
-# Install Docker on the remote Linux server
-resource "null_resource" "install_docker" {
+# Install Docker on the remote Linux server and create a user 'runner'
+resource "null_resource" "install_docker_and_create_user" {
   provisioner "remote-exec" {
     inline = [
       "apt update",
       "apt install -y apt-transport-https ca-certificates curl software-properties-common",
-      "apt update",
       "apt install -y ${local.package_name}",
       "systemctl start docker",
-      "systemctl enable docker"
+      "systemctl enable docker",
+      
+      # Create the 'runner' user
+      "id -u runner || useradd -m runner",  # Add user only if it doesn't exist
+      "usermod -aG docker runner",          # Add 'runner' to 'docker' group
+
+      # Ensure the runner user can use Docker without sudo
+      "newgrp docker"
     ]
 
     connection {
