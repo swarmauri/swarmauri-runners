@@ -27,19 +27,10 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      # Plan Terraform changes
-      - name: Terraform Plan
-        run: terraform plan -out=tfplan
-
       # Apply Terraform changes
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve tfplan
-
-      # Destroy infrastructure (optional step, typically used for PRs)
-      - name: Terraform Destroy
-        if: github.event_name == 'pull_request' && github.event.action == 'closed'
-        run: terraform destroy -auto-approve
+        run: terraform apply -auto-approve
 
       # Securely pass variables for sensitive information
       - name: Set Environment Variables
