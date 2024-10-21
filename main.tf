@@ -74,8 +74,6 @@ resource "null_resource" "install_docker_and_create_user" {
       "echo 'runner:${var.runner_password}' | chpasswd",  # Set the password for the runner user
       "usermod -aG docker runner",          # Add 'runner' to 'docker' group
 
-      # Ensure the runner user can use Docker without sudo
-      "newgrp docker"
     ]
 
     connection {
