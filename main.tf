@@ -59,7 +59,7 @@ locals {
   package_name = "docker.io"
 }
 
-# Install Docker on the remote Linux server and create a user 'runner'
+# Install Docker on the remote Linux server and create a user 'runner' with a configurable password
 resource "null_resource" "install_docker_and_create_user" {
   provisioner "remote-exec" {
     inline = [
@@ -69,8 +69,9 @@ resource "null_resource" "install_docker_and_create_user" {
       "systemctl start docker",
       "systemctl enable docker",
       
-      # Create the 'runner' user
-      "id -u runner || useradd -m runner",  # Add user only if it doesn't exist
+      # Create the 'runner' user with a configurable password
+      "id -u runner || useradd -m runner",  # Add user only if it doesn't exist  
+      "echo 'runner:${var.runner_password}' | chpasswd",  # Set the password for the runner user
       "usermod -aG docker runner",          # Add 'runner' to 'docker' group
 
       # Ensure the runner user can use Docker without sudo
@@ -91,9 +92,11 @@ resource "null_resource" "install_docker_and_create_user" {
   }
 }
 
+# Variables
 variable "linux_host" {
   description = "The host for the Linux provider"
   type        = string
+  sensitive   = true  # Marks the password as sensitive, which will hide it in logs
 }
 
 variable "linux_port" {
@@ -105,9 +108,18 @@ variable "linux_port" {
 variable "linux_user" {
   description = "The user for the Linux provider"
   type        = string
+  sensitive   = true  # Marks the password as sensitive, which will hide it in logs
 }
 
 variable "linux_password" {
   description = "The password for the Linux provider"
   type        = string
+  sensitive   = true  # Marks the password as sensitive, which will hide it in logs
+}
+
+# New variable for runner user password
+variable "runner_password" {
+  description = "Password for the runner user"
+  type        = string
+  sensitive   = true  # Marks the password as sensitive, which will hide it in logs
 }
