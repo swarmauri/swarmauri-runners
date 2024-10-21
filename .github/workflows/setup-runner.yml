@@ -36,7 +36,7 @@ jobs:
         env:
           TF_VAR_linux_host: ${{ secrets.LINUX_HOST }}
           TF_VAR_linux_port: ${{ secrets.LINUX_PORT }}
-          TF_VAR_linux_user: ${{ secrets.LINUX_USERNAME }}
+          TF_VAR_linux_username: ${{ secrets.LINUX_USERNAME }}
           TF_VAR_linux_password: ${{ secrets.LINUX_PASSWORD }}
           TF_VAR_runner_password: ${{ secrets.RUNNER_PASSWORD }}
         run: terraform apply -auto-approve
