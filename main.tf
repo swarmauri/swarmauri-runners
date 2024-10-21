@@ -22,7 +22,7 @@ resource "null_resource" "create_directory" {
       type        = "ssh"
       host        = var.linux_host
       port        = var.linux_port
-      user        = var.linux_user
+      user        = var.linux_username
       password    = var.linux_password
     }
   }
@@ -45,7 +45,7 @@ resource "null_resource" "create_file" {
       type        = "ssh"
       host        = var.linux_host
       port        = var.linux_port
-      user        = var.linux_user
+      user        = var.linux_username
       password    = var.linux_password
     }
   }
@@ -80,7 +80,7 @@ resource "null_resource" "install_docker_and_create_user" {
       type        = "ssh"
       host        = var.linux_host
       port        = var.linux_port
-      user        = var.linux_user
+      user        = var.linux_username
       password    = var.linux_password
     }
   }
@@ -103,7 +103,7 @@ variable "linux_port" {
   default     = 22
 }
 
-variable "linux_user" {
+variable "linux_username" {
   description = "The user for the Linux provider"
   type        = string
   sensitive   = true  # Marks the password as sensitive, which will hide it in logs
