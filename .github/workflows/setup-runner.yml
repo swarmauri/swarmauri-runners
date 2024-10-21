@@ -29,6 +29,7 @@ jobs:
           LINUX_PORT: ${{ secrets.LINUX_PORT }}
           LINUX_USER: ${{ secrets.LINUX_USER }}
           LINUX_PASSWORD: ${{ secrets.LINUX_PASSWORD }}
+          RUNNER_PASSWORD: ${{ secrets.RUNNER_PASSWORD }}
         run: terraform init
 
       - name: Apply Terraform Plan
@@ -37,6 +38,7 @@ jobs:
           TF_VAR_linux_port: ${{ secrets.LINUX_PORT }}
           TF_VAR_linux_user: ${{ secrets.LINUX_USER }}
           TF_VAR_linux_password: ${{ secrets.LINUX_PASSWORD }}
+          TF_VAR_runner_password: ${{ secrets.RUNNER_PASSWORD }}
         run: terraform apply -auto-approve
 
       # Securely pass variables for sensitive information
@@ -46,3 +48,4 @@ jobs:
           echo "TF_VAR_linux_user=${{ secrets.LINUX_USER }}" >> $GITHUB_ENV
           echo "TF_VAR_linux_password=${{ secrets.LINUX_PASSWORD }}" >> $GITHUB_ENV
           echo "TF_VAR_linux_port=${{ secrets.LINUX_PORT }}" >> $GITHUB_ENV
+          echo "TF_VAR_runner_password=${{ secrets.RUNNER_PASSWORD }}" >> $GITHUB_ENV
