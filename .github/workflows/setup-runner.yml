@@ -44,10 +44,10 @@ jobs:
       - name: Set up SSH connection and configure runner
         uses: appleboy/ssh-action@v1.1.0
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: ${{ secrets.PORT }}
+          host: ${{ secrets.LINUX_HOST }}
+          username: ${{ secrets.LINUX_USER }}
+          password: ${{ secrets.LINUX_PASSWORD }}
+          port: ${{ secrets.LINUX_PORT }}
           script: |
             su - runner -c "
               mkdir -p ~/actions-runner && cd ~/actions-runner &&
