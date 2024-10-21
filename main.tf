@@ -56,7 +56,7 @@ resource "null_resource" "create_file" {
 }
 
 locals {
-  package_name = "docker.io"
+  package_name = "docker-ce"
 }
 
 # Install Docker on the remote Linux server
@@ -65,6 +65,8 @@ resource "null_resource" "install_docker" {
     inline = [
       "apt update",
       "apt install -y apt-transport-https ca-certificates curl software-properties-common",
+      "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
+      "add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\"",
       "apt update",
       "apt install -y ${local.package_name}",
       "systemctl start docker",
