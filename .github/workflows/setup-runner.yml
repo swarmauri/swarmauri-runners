@@ -42,14 +42,14 @@ jobs:
         run: terraform apply -auto-approve
 
       - name: Set up SSH connection and configure runner
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.1.0
         with:
-          host: ${{ secrets.LINUX_HOST }}  # The remote Linux host
-          username: ${{ secrets.LINUX_USER }}  # SSH username
-          password: ${{ secrets.LINUX_PASSWORD }}  # SSH password
-          port: ${{ secrets.LINUX_PORT }}  # The SSH port (usually 22)
-          script: |            
-            sudo su - runner -c "
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            su - runner -c "
               mkdir -p ~/actions-runner && cd ~/actions-runner &&
               curl -o actions-runner-linux-x64-2.320.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.320.0/actions-runner-linux-x64-2.320.0.tar.gz &&
               echo '93ac1b7ce743ee85b5d386f5c1787385e07b3d7c728ff66e0d3813d5f46900 actions-runner-linux-x64-2.320.0.tar.gz' | shasum -a 256 -c &&
