@@ -41,15 +41,6 @@ jobs:
           TF_VAR_runner_password: ${{ secrets.RUNNER_PASSWORD }}
         run: terraform apply -auto-approve
 
-      # Securely pass variables for sensitive information
-      - name: Set Environment Variables
-        run: |
-          echo "TF_VAR_linux_host=${{ secrets.LINUX_HOST }}" >> $GITHUB_ENV
-          echo "TF_VAR_linux_user=${{ secrets.LINUX_USER }}" >> $GITHUB_ENV
-          echo "TF_VAR_linux_password=${{ secrets.LINUX_PASSWORD }}" >> $GITHUB_ENV
-          echo "TF_VAR_linux_port=${{ secrets.LINUX_PORT }}" >> $GITHUB_ENV
-          echo "TF_VAR_runner_password=${{ secrets.RUNNER_PASSWORD }}" >> $GITHUB_ENV
-
       - name: Set up SSH connection and configure runner
         uses: appleboy/ssh-action@master
         with:
@@ -57,21 +48,12 @@ jobs:
           username: ${{ secrets.LINUX_USER }}  # SSH username
           password: ${{ secrets.LINUX_PASSWORD }}  # SSH password
           port: ${{ secrets.LINUX_PORT }}  # The SSH port (usually 22)
-          script: |
-            # 1. Create 'runner' user if it doesn't exist
-            id -u runner || sudo useradd -m runner
-            echo 'runner:${{ secrets.RUNNER_PASSWORD }}' | sudo chpasswd  # Set runner's password securely
-
-            # 2. Install required dependencies
-            sudo apt update && sudo apt install -y curl tar
-
-            # 3. Switch to runner user and set up GitHub Actions Runner
+          script: |            
             sudo su - runner -c "
               mkdir -p ~/actions-runner && cd ~/actions-runner &&
               curl -o actions-runner-linux-x64-2.320.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.320.0/actions-runner-linux-x64-2.320.0.tar.gz &&
               echo '93ac1b7ce743ee85b5d386f5c1787385e07b3d7c728ff66e0d3813d5f46900 actions-runner-linux-x64-2.320.0.tar.gz' | shasum -a 256 -c &&
               tar xzf ./actions-runner-linux-x64-2.320.0.tar.gz &&
               ./config.sh --url https://github.com/swarmmauri/swarmmauri-sdk --token ${{ secrets.RUNNER_TOKEN }} &&
-              ./svc.sh install &&
-              ./svc.sh start
+              ./run.sh
             "
