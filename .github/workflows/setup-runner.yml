@@ -23,13 +23,20 @@ jobs:
         with:
           terraform_version: 1.9.8
 
-      # Initialize Terraform
-      - name: Terraform Init
+      - name: Initialize Terraform
+        env:
+          LINUX_HOST: ${{ secrets.LINUX_HOST }}
+          LINUX_PORT: ${{ secrets.LINUX_PORT }}
+          LINUX_USER: ${{ secrets.LINUX_USER }}
+          LINUX_PASSWORD: ${{ secrets.LINUX_PASSWORD }}
         run: terraform init
 
-      # Apply Terraform changes
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'
+      - name: Apply Terraform Plan
+        env:
+          TF_VAR_linux_host: ${{ secrets.LINUX_HOST }}
+          TF_VAR_linux_port: ${{ secrets.LINUX_PORT }}
+          TF_VAR_linux_user: ${{ secrets.LINUX_USER }}
+          TF_VAR_linux_password: ${{ secrets.LINUX_PASSWORD }}
         run: terraform apply -auto-approve
 
       # Securely pass variables for sensitive information
